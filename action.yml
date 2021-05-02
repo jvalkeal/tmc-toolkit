@@ -1,0 +1,16 @@
+name: 'TMC Toolkit'
+description: 'Various actions with TMC cli'
+author: 'jvalkeal'
+inputs:
+  org:
+    description: 'TMC organization'
+    required: true
+  api:
+    description: 'TMC api version to use, defaults to v1alpha1'
+    required: false
+  version:
+    description: 'TMC CLI version to make available on the path, defaults to latest from org'
+    required: false
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
