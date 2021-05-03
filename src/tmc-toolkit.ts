@@ -34,7 +34,7 @@ export async function cleanup() {
   logInfo('doing clean');
   const res = await execTmc(
     `tmc`,
-    ['version', 'system', 'context', 'list'],
+    ['system', 'context', 'list'],
     true
   ).then(res => {
     return res.stdout;

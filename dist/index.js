@@ -4627,7 +4627,7 @@ exports.run = run;
 function cleanup() {
     return __awaiter(this, void 0, void 0, function* () {
         logging_1.logInfo('doing clean');
-        const res = yield tmc_exec_1.execTmc(`tmc`, ['version', 'system', 'context', 'list'], true).then(res => {
+        const res = yield tmc_exec_1.execTmc(`tmc`, ['system', 'context', 'list'], true).then(res => {
             return res.stdout;
         });
         logging_1.logInfo(`result: ${res}`);
