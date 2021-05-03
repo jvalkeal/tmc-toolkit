@@ -1,3 +1,8 @@
-import {run} from './tmc-toolkit';
+import {run, cleanup} from './tmc-toolkit';
+import * as stateHelper from './state-helper';
 
-run();
+if (!stateHelper.IsPost) {
+  run();
+} else {
+  cleanup();
+}

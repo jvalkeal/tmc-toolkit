@@ -354,13 +354,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const os = __webpack_require__(87);
-const events = __webpack_require__(614);
-const child = __webpack_require__(129);
-const path = __webpack_require__(622);
-const io = __webpack_require__(1);
-const ioUtil = __webpack_require__(672);
+const os = __importStar(__webpack_require__(87));
+const events = __importStar(__webpack_require__(614));
+const child = __importStar(__webpack_require__(129));
+const path = __importStar(__webpack_require__(622));
+const io = __importStar(__webpack_require__(1));
+const ioUtil = __importStar(__webpack_require__(672));
 /* eslint-disable @typescript-eslint/unbound-method */
 const IS_WINDOWS = process.platform === 'win32';
 /*
@@ -804,6 +811,12 @@ class ToolRunner extends events.EventEmitter {
                         resolve(exitCode);
                     }
                 });
+                if (this.options.input) {
+                    if (!cp.stdin) {
+                        throw new Error('child process missing stdin');
+                    }
+                    cp.stdin.end(this.options.input);
+                }
             });
         });
     }
@@ -1511,6 +1524,48 @@ module.exports = __webpack_require__(352);
 
 /***/ }),
 
+/***/ 71:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+"use strict";
+
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const core = __importStar(__webpack_require__(470));
+function logWarn(message) {
+    core.warning(message);
+}
+exports.logWarn = logWarn;
+function logError(message) {
+    core.error(message);
+}
+exports.logError = logError;
+function logInfo(message) {
+    core.info(message);
+}
+exports.logInfo = logInfo;
+function logDebug(message) {
+    core.debug(message);
+}
+exports.logDebug = logDebug;
+function startGroup(group) {
+    core.startGroup(group);
+}
+exports.startGroup = startGroup;
+function endGroup() {
+    core.endGroup();
+}
+exports.endGroup = endGroup;
+
+
+/***/ }),
+
 /***/ 81:
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1808,6 +1863,32 @@ module.exports = require("os");
 
 /***/ }),
 
+/***/ 92:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+"use strict";
+
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const core = __importStar(__webpack_require__(470));
+exports.IsPost = !!process.env['STATE_isPost'];
+// export const tmpDir = process.env['STATE_tmpDir'] || '';
+// export function setTmpDir(tmpDir: string) {
+//   core.saveState('tmpDir', tmpDir);
+// }
+if (!exports.IsPost) {
+    core.saveState('isPost', 'true');
+}
+
+
+/***/ }),
+
 /***/ 102:
 /***/ (function(__unusedmodule, exports, __webpack_require__) {
 
@@ -1891,6 +1972,7 @@ const io = __importStar(__webpack_require__(1));
 const tc = __importStar(__webpack_require__(533));
 const fs = __importStar(__webpack_require__(747));
 const tmc_client_1 = __webpack_require__(699);
+const logging_1 = __webpack_require__(71);
 class CliInstall {
     constructor() {
         this.tempDirectory = process.env['RUNNER_TEMP'] || '';
@@ -1914,6 +1996,7 @@ class CliInstall {
     }
     getCli(org, versionIn, apiVersion) {
         return __awaiter(this, void 0, void 0, function* () {
+            logging_1.startGroup('CLI install');
             const latestVersion = yield this.getLatestVersion(org, apiVersion);
             core.debug(`Latest version is ${latestVersion}`);
             const version = versionIn === 'latest' ? latestVersion : versionIn;
@@ -1950,6 +2033,7 @@ class CliInstall {
                 toolPath = yield tc.cacheDir(cliDir, toolName, this.getCacheVersionString(cliVersion));
             }
             core.addPath(toolPath);
+            logging_1.endGroup();
             return { dir: toolPath, cached };
         });
     }
@@ -2013,9 +2097,22 @@ module.exports = require("child_process");
 
 "use strict";
 
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const tmc_toolkit_1 = __webpack_require__(292);
-tmc_toolkit_1.run();
+const stateHelper = __importStar(__webpack_require__(92));
+if (!stateHelper.IsPost) {
+    tmc_toolkit_1.run();
+}
+else {
+    tmc_toolkit_1.cleanup();
+}
 
 
 /***/ }),
@@ -2455,15 +2552,6 @@ exports.debug = debug; // for test
 
 "use strict";
 
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
@@ -2473,16 +2561,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(470));
-const exec_1 = __webpack_require__(986);
-function runCli(cliPath, args) {
-    return __awaiter(this, void 0, void 0, function* () {
-        let res = yield exec_1.exec(cliPath, args);
-        if (res !== core.ExitCode.Success) {
-            throw new Error('CLI exited with exit code ' + res);
-        }
-    });
-}
-exports.runCli = runCli;
+// import {exec} from '@actions/exec';
+// export async function runCli(cliPath: string, args: string[] | undefined) {
+//   let res: number = await exec(cliPath, args);
+//   if (res !== core.ExitCode.Success) {
+//     throw new Error('CLI exited with exit code ' + res);
+//   }
+// }
 function inputRequired(id) {
     return core.getInput(id, { required: true });
 }
@@ -4516,7 +4601,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(470));
 const cli_install_1 = __webpack_require__(128);
 const constants_1 = __webpack_require__(694);
+const logging_1 = __webpack_require__(71);
 const utils_1 = __webpack_require__(163);
+const tmc_exec_1 = __webpack_require__(991);
 /**
  * Main entry point for an action doing real stuff. Separate from action
  * main call point to ease testing inputs.
@@ -4527,6 +4614,7 @@ function run() {
             const org = utils_1.inputRequired(constants_1.INPUT_ORG);
             const api = utils_1.inputNotRequired(constants_1.INPUT_API) || constants_1.DEFAULT_TMC_API_VERSION;
             const version = utils_1.inputNotRequired(constants_1.INPUT_VERSION) || 'latest';
+            const token = utils_1.inputNotRequired(constants_1.INPUT_TOKEN);
             const cliInstall = new cli_install_1.CliInstall();
             yield cliInstall.getCli(org, version, api);
         }
@@ -4536,6 +4624,21 @@ function run() {
     });
 }
 exports.run = run;
+function cleanup() {
+    return __awaiter(this, void 0, void 0, function* () {
+        logging_1.logInfo('doing clean');
+        const res = yield tmc_exec_1.execTmc(`tmc`, ['version', 'system', 'context', 'list'], true).then(res => {
+            return res.stdout;
+        });
+        logging_1.logInfo(`result: ${res}`);
+        // if (stateHelper.tmpDir.length > 0) {
+        //   core.startGroup(`Removing temp folder ${stateHelper.tmpDir}`);
+        //   fs.rmdirSync(stateHelper.tmpDir, {recursive: true});
+        //   core.endGroup();
+        // }
+    });
+}
+exports.cleanup = cleanup;
 
 
 /***/ }),
@@ -8202,6 +8305,7 @@ exports.DEFAULT_TMC_API_VERSION = 'v1alpha1';
 exports.INPUT_ORG = 'org';
 exports.INPUT_VERSION = 'version';
 exports.INPUT_API = 'api';
+exports.INPUT_TOKEN = 'token';
 
 
 /***/ }),
@@ -9142,8 +9246,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const tr = __webpack_require__(9);
+const tr = __importStar(__webpack_require__(9));
 /**
  * Exec a command.
  * Output will be streamed to the live console.
@@ -9169,6 +9280,55 @@ function exec(commandLine, args, options) {
 }
 exports.exec = exec;
 //# sourceMappingURL=exec.js.map
+
+/***/ }),
+
+/***/ 991:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const exec = __importStar(__webpack_require__(986));
+exports.execTmc = (command, args = [], silent) => __awaiter(void 0, void 0, void 0, function* () {
+    let stdout = '';
+    let stderr = '';
+    const options = {
+        silent: silent,
+        ignoreReturnCode: true
+    };
+    options.listeners = {
+        stdout: (data) => {
+            stdout += data.toString();
+        },
+        stderr: (data) => {
+            stderr += data.toString();
+        }
+    };
+    const returnCode = yield exec.exec(command, args, options);
+    return {
+        success: returnCode === 0,
+        stdout: stdout.trim(),
+        stderr: stderr.trim()
+    };
+});
+
 
 /***/ })
 

@@ -10,3 +10,4 @@ export const DEFAULT_TMC_API_VERSION = 'v1alpha1';
 export const INPUT_ORG = 'org';
 export const INPUT_VERSION = 'version';
 export const INPUT_API = 'api';
+export const INPUT_TOKEN = 'token';

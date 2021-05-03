@@ -5,6 +5,9 @@ inputs:
   org:
     description: 'TMC organization'
     required: true
+  token:
+    description: 'TMC api token'
+    required: false
   api:
     description: 'TMC api version to use, defaults to v1alpha1'
     required: false
@@ -14,3 +17,4 @@ inputs:
 runs:
   using: 'node12'
   main: 'dist/index.js'
+  post: 'dist/index.js'

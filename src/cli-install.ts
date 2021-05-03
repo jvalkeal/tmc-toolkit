@@ -4,6 +4,7 @@ import * as io from '@actions/io';
 import * as tc from '@actions/tool-cache';
 import * as fs from 'fs';
 import {TmcClient} from './tmc-client';
+import {endGroup, startGroup} from './logging';
 
 export interface GetCliResult {
   dir: string;
@@ -36,6 +37,7 @@ export class CliInstall {
     versionIn: string,
     apiVersion: string
   ): Promise<GetCliResult> {
+    startGroup('CLI install');
     const latestVersion = await this.getLatestVersion(org, apiVersion);
     core.debug(`Latest version is ${latestVersion}`);
     const version = versionIn === 'latest' ? latestVersion : versionIn;
@@ -82,6 +84,7 @@ export class CliInstall {
       );
     }
     core.addPath(toolPath);
+    endGroup();
     return {dir: toolPath, cached};
   }
 
