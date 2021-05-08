@@ -1,4 +1,5 @@
 import {ENV_TMC_API_TOKEN} from './constants';
+import { logError, logInfo } from './logging';
 import {execTmc} from './tmc-exec';
 
 export class TmcCli {
@@ -15,9 +16,16 @@ export class TmcCli {
   }
 
   public async login(token: string): Promise<void> {
-    await execTmc('tmc', ['--name githubactions', '--no-configure'], true, {
+    await execTmc('tmc', ['--name githubactions', '--no-configure'], false, {
       [ENV_TMC_API_TOKEN]: token
-    });
+    })
+    .then(response => {
+      logInfo(`Login Response: ${response}`)
+    })
+    .catch(reason => {
+      logError(`Login Error: ${reason}`);
+    })
+    ;
   }
 
   public async configure(
@@ -33,6 +41,13 @@ export class TmcCli {
         provisionerName
       ],
       true
-    );
+    )
+    .then(response => {
+      logInfo(`Configure Response: ${response}`)
+    })
+    .catch(reason => {
+      logError(`Configure Error: ${reason}`);
+    })
+    ;
   }
 }

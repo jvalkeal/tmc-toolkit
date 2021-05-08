@@ -9395,6 +9395,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const constants_1 = __webpack_require__(694);
+const logging_1 = __webpack_require__(71);
 const tmc_exec_1 = __webpack_require__(991);
 class TmcCli {
     constructor() { }
@@ -9411,8 +9412,14 @@ class TmcCli {
     }
     login(token) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield tmc_exec_1.execTmc('tmc', ['--name githubactions', '--no-configure'], true, {
+            yield tmc_exec_1.execTmc('tmc', ['--name githubactions', '--no-configure'], false, {
                 [constants_1.ENV_TMC_API_TOKEN]: token
+            })
+                .then(response => {
+                logging_1.logInfo(`Login Response: ${response}`);
+            })
+                .catch(reason => {
+                logging_1.logError(`Login Error: ${reason}`);
             });
         });
     }
@@ -9423,7 +9430,13 @@ class TmcCli {
                 managementClusterName,
                 '--provisioner-name',
                 provisionerName
-            ], true);
+            ], true)
+                .then(response => {
+                logging_1.logInfo(`Configure Response: ${response}`);
+            })
+                .catch(reason => {
+                logging_1.logError(`Configure Error: ${reason}`);
+            });
         });
     }
 }
