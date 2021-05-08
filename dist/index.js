@@ -9412,7 +9412,7 @@ class TmcCli {
     }
     login(token) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield tmc_exec_1.execTmc('tmc', ['--name githubactions', '--no-configure'], false, {
+            yield tmc_exec_1.execTmc('tmc', ['login', '--name githubactions', '--no-configure'], false, {
                 [constants_1.ENV_TMC_API_TOKEN]: token
             })
                 .then(response => {
@@ -9426,6 +9426,7 @@ class TmcCli {
     configure(managementClusterName, provisionerName) {
         return __awaiter(this, void 0, void 0, function* () {
             yield tmc_exec_1.execTmc('tmc', [
+                'configure',
                 '--management-cluster-name',
                 managementClusterName,
                 '--provisioner-name',

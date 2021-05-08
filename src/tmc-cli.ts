@@ -16,7 +16,7 @@ export class TmcCli {
   }
 
   public async login(token: string): Promise<void> {
-    await execTmc('tmc', ['--name githubactions', '--no-configure'], false, {
+    await execTmc('tmc', ['login', '--name githubactions', '--no-configure'], false, {
       [ENV_TMC_API_TOKEN]: token
     })
     .then(response => {
@@ -35,6 +35,7 @@ export class TmcCli {
     await execTmc(
       'tmc',
       [
+        'configure',
         '--management-cluster-name',
         managementClusterName,
         '--provisioner-name',
