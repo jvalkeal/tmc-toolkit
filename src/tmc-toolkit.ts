@@ -6,6 +6,7 @@ import {
   INPUT_API,
   INPUT_MANAGEMENT_CLUSTER_NAME,
   INPUT_ORG,
+  INPUT_CONTEXT_NAME,
   INPUT_PROVISIONER_NAME,
   INPUT_TOKEN,
   INPUT_VERSION
@@ -27,6 +28,7 @@ export async function run() {
     const api = inputNotRequired(INPUT_API) || DEFAULT_TMC_API_VERSION;
     const version = inputNotRequired(INPUT_VERSION) || 'latest';
     const token = inputNotRequired(INPUT_TOKEN);
+    const contextName = inputNotRequired(INPUT_CONTEXT_NAME);
     const managementClusterName = inputNotRequired(INPUT_MANAGEMENT_CLUSTER_NAME);
     const provisionerName = inputNotRequired(INPUT_PROVISIONER_NAME);
 
@@ -34,8 +36,8 @@ export async function run() {
     await cliInstall.getCli(org, version, api);
 
     const tmcLogin = new TmcLogin();
-    const contextName = await tmcLogin.login(token, managementClusterName, provisionerName);
-    stateHelper.setCurrentContextName(contextName);
+    const contextNameCreated = await tmcLogin.login(token, managementClusterName, provisionerName, contextName);
+    stateHelper.setCurrentContextName(contextNameCreated);
   } catch (error) {
     core.setFailed(error.message);
   }

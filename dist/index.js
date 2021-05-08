@@ -4617,13 +4617,14 @@ function run() {
             const api = utils_1.inputNotRequired(constants_1.INPUT_API) || constants_1.DEFAULT_TMC_API_VERSION;
             const version = utils_1.inputNotRequired(constants_1.INPUT_VERSION) || 'latest';
             const token = utils_1.inputNotRequired(constants_1.INPUT_TOKEN);
+            const contextName = utils_1.inputNotRequired(constants_1.INPUT_CONTEXT_NAME);
             const managementClusterName = utils_1.inputNotRequired(constants_1.INPUT_MANAGEMENT_CLUSTER_NAME);
             const provisionerName = utils_1.inputNotRequired(constants_1.INPUT_PROVISIONER_NAME);
             const cliInstall = new cli_install_1.CliInstall();
             yield cliInstall.getCli(org, version, api);
             const tmcLogin = new login_1.TmcLogin();
-            const contextName = yield tmcLogin.login(token, managementClusterName, provisionerName);
-            stateHelper.setCurrentContextName(contextName);
+            const contextNameCreated = yield tmcLogin.login(token, managementClusterName, provisionerName, contextName);
+            stateHelper.setCurrentContextName(contextNameCreated);
         }
         catch (error) {
             core.setFailed(error.message);
@@ -7672,13 +7673,13 @@ class TmcLogin {
     constructor() {
         this.tmcCli = new tmc_cli_1.TmcCli();
     }
-    login(token, managementClusterName, provisionerName) {
+    login(token, managementClusterName, provisionerName, contextName) {
         return __awaiter(this, void 0, void 0, function* () {
             logging_1.startGroup('TMC login');
-            const contextName = yield this.tmcCli.login(token);
+            const contextNameCreated = yield this.tmcCli.login(token, contextName);
             yield this.tmcCli.configure(managementClusterName, provisionerName);
             logging_1.endGroup();
-            return contextName;
+            return contextNameCreated;
         });
     }
 }
@@ -8411,6 +8412,7 @@ exports.INPUT_ORG = 'org';
 exports.INPUT_VERSION = 'version';
 exports.INPUT_API = 'api';
 exports.INPUT_TOKEN = 'token';
+exports.INPUT_CONTEXT_NAME = 'context-name';
 exports.INPUT_MANAGEMENT_CLUSTER_NAME = 'management-cluster-name';
 exports.INPUT_PROVISIONER_NAME = 'provisioner-name';
 
@@ -9408,9 +9410,9 @@ class TmcCli {
             // });
         });
     }
-    login(token) {
+    login(token, contextName) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield tmc_exec_1.execTmc('tmc', ['login', '--name', 'githubactions', '--no-configure'], false, {
+            yield tmc_exec_1.execTmc('tmc', ['login', '--name', contextName, '--no-configure'], false, {
                 [constants_1.ENV_TMC_API_TOKEN]: token
             })
                 .then(response => {
@@ -9419,7 +9421,7 @@ class TmcCli {
                 .catch(reason => {
                 logging_1.logError(`Login Error: ${reason}`);
             });
-            return 'githubactions';
+            return contextName;
         });
     }
     configure(managementClusterName, provisionerName) {

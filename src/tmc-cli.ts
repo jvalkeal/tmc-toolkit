@@ -15,8 +15,8 @@ export class TmcCli {
     // });
   }
 
-  public async login(token: string): Promise<string> {
-    await execTmc('tmc', ['login', '--name', 'githubactions', '--no-configure'], false, {
+  public async login(token: string, contextName: string): Promise<string> {
+    await execTmc('tmc', ['login', '--name', contextName, '--no-configure'], false, {
       [ENV_TMC_API_TOKEN]: token
     })
     .then(response => {
@@ -26,7 +26,7 @@ export class TmcCli {
       logError(`Login Error: ${reason}`);
     })
     ;
-    return 'githubactions';
+    return contextName;
   }
 
   public async configure(

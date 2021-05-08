@@ -13,5 +13,6 @@ export const INPUT_ORG = 'org';
 export const INPUT_VERSION = 'version';
 export const INPUT_API = 'api';
 export const INPUT_TOKEN = 'token';
+export const INPUT_CONTEXT_NAME = 'context-name';
 export const INPUT_MANAGEMENT_CLUSTER_NAME = 'management-cluster-name';
 export const INPUT_PROVISIONER_NAME = 'provisioner-name';
