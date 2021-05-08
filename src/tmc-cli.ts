@@ -15,7 +15,7 @@ export class TmcCli {
     // });
   }
 
-  public async login(token: string): Promise<void> {
+  public async login(token: string): Promise<string> {
     await execTmc('tmc', ['login', '--name', 'githubactions', '--no-configure'], false, {
       [ENV_TMC_API_TOKEN]: token
     })
@@ -26,6 +26,7 @@ export class TmcCli {
       logError(`Login Error: ${reason}`);
     })
     ;
+    return 'githubactions';
   }
 
   public async configure(
@@ -51,4 +52,27 @@ export class TmcCli {
     })
     ;
   }
+
+  public async deleteContext(
+   name: string,
+  ): Promise<void> {
+    await execTmc(
+      'tmc',
+      [
+        'system',
+        'context',
+        'delete',
+        name
+      ],
+      true
+    )
+    .then(response => {
+      logInfo(`Context delete Response: ${response}`)
+    })
+    .catch(reason => {
+      logError(`Context delete Error: ${reason}`);
+    })
+    ;
+  }
+
 }

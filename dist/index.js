@@ -1878,10 +1878,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(470));
 exports.IsPost = !!process.env['STATE_isPost'];
-// export const tmpDir = process.env['STATE_tmpDir'] || '';
-// export function setTmpDir(tmpDir: string) {
-//   core.saveState('tmpDir', tmpDir);
-// }
+exports.currentContextName = process.env['STATE_currentContextName'] || '';
+function setCurrentContextName(name) {
+    core.saveState('currentContextName', name);
+}
+exports.setCurrentContextName = setCurrentContextName;
 if (!exports.IsPost) {
     core.saveState('isPost', 'true');
 }
@@ -4602,7 +4603,9 @@ const cli_install_1 = __webpack_require__(128);
 const constants_1 = __webpack_require__(694);
 const logging_1 = __webpack_require__(71);
 const utils_1 = __webpack_require__(163);
+const stateHelper = __importStar(__webpack_require__(92));
 const login_1 = __webpack_require__(554);
+const tmc_cli_1 = __webpack_require__(992);
 /**
  * Main entry point for an action doing real stuff. Separate from action
  * main call point to ease testing inputs.
@@ -4619,7 +4622,8 @@ function run() {
             const cliInstall = new cli_install_1.CliInstall();
             yield cliInstall.getCli(org, version, api);
             const tmcLogin = new login_1.TmcLogin();
-            yield tmcLogin.login(token, managementClusterName, provisionerName);
+            const contextName = yield tmcLogin.login(token, managementClusterName, provisionerName);
+            stateHelper.setCurrentContextName(contextName);
         }
         catch (error) {
             core.setFailed(error.message);
@@ -4630,19 +4634,12 @@ exports.run = run;
 function cleanup() {
     return __awaiter(this, void 0, void 0, function* () {
         logging_1.logInfo('doing clean');
-        // const res = await execTmc(
-        //   `tmc`,
-        //   ['system', 'context', 'list'],
-        //   true
-        // ).then(res => {
-        //   return res.stdout;
-        // });
-        // logInfo(`result: ${res}`);
-        // if (stateHelper.tmpDir.length > 0) {
-        //   core.startGroup(`Removing temp folder ${stateHelper.tmpDir}`);
-        //   fs.rmdirSync(stateHelper.tmpDir, {recursive: true});
-        //   core.endGroup();
-        // }
+        if (stateHelper.currentContextName.length > 0) {
+            core.startGroup(`Removing context`);
+            const tmcCli = new tmc_cli_1.TmcCli();
+            yield tmcCli.deleteContext(stateHelper.currentContextName);
+            core.endGroup();
+        }
     });
 }
 exports.cleanup = cleanup;
@@ -7678,9 +7675,10 @@ class TmcLogin {
     login(token, managementClusterName, provisionerName) {
         return __awaiter(this, void 0, void 0, function* () {
             logging_1.startGroup('TMC login');
-            yield this.tmcCli.login(token);
+            const contextName = yield this.tmcCli.login(token);
             yield this.tmcCli.configure(managementClusterName, provisionerName);
             logging_1.endGroup();
+            return contextName;
         });
     }
 }
@@ -9421,6 +9419,7 @@ class TmcCli {
                 .catch(reason => {
                 logging_1.logError(`Login Error: ${reason}`);
             });
+            return 'githubactions';
         });
     }
     configure(managementClusterName, provisionerName) {
@@ -9437,6 +9436,22 @@ class TmcCli {
             })
                 .catch(reason => {
                 logging_1.logError(`Configure Error: ${reason}`);
+            });
+        });
+    }
+    deleteContext(name) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield tmc_exec_1.execTmc('tmc', [
+                'system',
+                'context',
+                'delete',
+                name
+            ], true)
+                .then(response => {
+                logging_1.logInfo(`Context delete Response: ${response}`);
+            })
+                .catch(reason => {
+                logging_1.logError(`Context delete Error: ${reason}`);
             });
         });
     }

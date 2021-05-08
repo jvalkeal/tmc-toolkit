@@ -12,10 +12,11 @@ export class TmcLogin {
     token: string,
     managementClusterName: string,
     provisionerName: string
-  ): Promise<void> {
+  ): Promise<string> {
     startGroup('TMC login');
-    await this.tmcCli.login(token);
+    const contextName = await this.tmcCli.login(token);
     await this.tmcCli.configure(managementClusterName, provisionerName);
     endGroup();
+    return contextName;
   }
 }

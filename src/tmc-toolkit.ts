@@ -15,6 +15,7 @@ import {inputNotRequired, inputRequired} from './utils';
 import * as stateHelper from './state-helper';
 import {execTmc} from './tmc-exec';
 import {TmcLogin} from './login';
+import { TmcCli } from './tmc-cli';
 
 /**
  * Main entry point for an action doing real stuff. Separate from action
@@ -33,7 +34,8 @@ export async function run() {
     await cliInstall.getCli(org, version, api);
 
     const tmcLogin = new TmcLogin();
-    await tmcLogin.login(token, managementClusterName, provisionerName);
+    const contextName = await tmcLogin.login(token, managementClusterName, provisionerName);
+    stateHelper.setCurrentContextName(contextName);
   } catch (error) {
     core.setFailed(error.message);
   }
@@ -41,17 +43,10 @@ export async function run() {
 
 export async function cleanup() {
   logInfo('doing clean');
-  // const res = await execTmc(
-  //   `tmc`,
-  //   ['system', 'context', 'list'],
-  //   true
-  // ).then(res => {
-  //   return res.stdout;
-  // });
-  // logInfo(`result: ${res}`);
-  // if (stateHelper.tmpDir.length > 0) {
-  //   core.startGroup(`Removing temp folder ${stateHelper.tmpDir}`);
-  //   fs.rmdirSync(stateHelper.tmpDir, {recursive: true});
-  //   core.endGroup();
-  // }
+  if (stateHelper.currentContextName.length > 0) {
+    core.startGroup(`Removing context`);
+    const tmcCli = new TmcCli();
+    await tmcCli.deleteContext(stateHelper.currentContextName);
+    core.endGroup();
+  }
 }
