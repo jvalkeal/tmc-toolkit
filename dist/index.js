@@ -9414,7 +9414,7 @@ class TmcCli {
                 [constants_1.ENV_TMC_API_TOKEN]: token
             })
                 .then(response => {
-                logging_1.logInfo(`Login Response: ${response}`);
+                logging_1.logInfo(`Login Response: ${response.stdout}`);
             })
                 .catch(reason => {
                 logging_1.logError(`Login Error: ${reason}`);
@@ -9432,7 +9432,7 @@ class TmcCli {
                 provisionerName
             ], true)
                 .then(response => {
-                logging_1.logInfo(`Configure Response: ${response}`);
+                logging_1.logInfo(`Configure Response: ${response.stdout}`);
             })
                 .catch(reason => {
                 logging_1.logError(`Configure Error: ${reason}`);
@@ -9448,7 +9448,7 @@ class TmcCli {
                 name
             ], true)
                 .then(response => {
-                logging_1.logInfo(`Context delete Response: ${response}`);
+                logging_1.logInfo(`Context delete Response: ${response.stdout}`);
             })
                 .catch(reason => {
                 logging_1.logError(`Context delete Error: ${reason}`);

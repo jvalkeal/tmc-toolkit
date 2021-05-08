@@ -20,7 +20,7 @@ export class TmcCli {
       [ENV_TMC_API_TOKEN]: token
     })
     .then(response => {
-      logInfo(`Login Response: ${response}`)
+      logInfo(`Login Response: ${response.stdout}`)
     })
     .catch(reason => {
       logError(`Login Error: ${reason}`);
@@ -45,7 +45,7 @@ export class TmcCli {
       true
     )
     .then(response => {
-      logInfo(`Configure Response: ${response}`)
+      logInfo(`Configure Response: ${response.stdout}`)
     })
     .catch(reason => {
       logError(`Configure Error: ${reason}`);
@@ -67,7 +67,7 @@ export class TmcCli {
       true
     )
     .then(response => {
-      logInfo(`Context delete Response: ${response}`)
+      logInfo(`Context delete Response: ${response.stdout}`)
     })
     .catch(reason => {
       logError(`Context delete Error: ${reason}`);
