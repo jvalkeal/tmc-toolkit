@@ -8,6 +8,12 @@ inputs:
   token:
     description: 'TMC api token'
     required: false
+  management-cluster-name:
+    description: 'xxx'
+    required: false
+  provisioner-name:
+    description: 'xxx'
+    required: false
   api:
     description: 'TMC api version to use, defaults to v1alpha1'
     required: false

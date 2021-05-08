@@ -1971,7 +1971,7 @@ const core = __importStar(__webpack_require__(470));
 const io = __importStar(__webpack_require__(1));
 const tc = __importStar(__webpack_require__(533));
 const fs = __importStar(__webpack_require__(747));
-const tmc_client_1 = __webpack_require__(699);
+const tmc_api_client_1 = __webpack_require__(452);
 const logging_1 = __webpack_require__(71);
 class CliInstall {
     constructor() {
@@ -2056,9 +2056,8 @@ class CliInstall {
     }
     getLatestVersion(org, api) {
         return __awaiter(this, void 0, void 0, function* () {
-            const tmcClient = new tmc_client_1.TmcClient({
+            const tmcClient = new tmc_api_client_1.TmcApiClient({
                 org,
-                timeout: 9999,
                 api
             });
             return (yield tmcClient.getSystemBinaries()).latestVersion;
@@ -4603,7 +4602,7 @@ const cli_install_1 = __webpack_require__(128);
 const constants_1 = __webpack_require__(694);
 const logging_1 = __webpack_require__(71);
 const utils_1 = __webpack_require__(163);
-const tmc_exec_1 = __webpack_require__(991);
+const login_1 = __webpack_require__(554);
 /**
  * Main entry point for an action doing real stuff. Separate from action
  * main call point to ease testing inputs.
@@ -4615,8 +4614,12 @@ function run() {
             const api = utils_1.inputNotRequired(constants_1.INPUT_API) || constants_1.DEFAULT_TMC_API_VERSION;
             const version = utils_1.inputNotRequired(constants_1.INPUT_VERSION) || 'latest';
             const token = utils_1.inputNotRequired(constants_1.INPUT_TOKEN);
+            const managementClusterName = utils_1.inputNotRequired(constants_1.INPUT_MANAGEMENT_CLUSTER_NAME);
+            const provisionerName = utils_1.inputNotRequired(constants_1.INPUT_PROVISIONER_NAME);
             const cliInstall = new cli_install_1.CliInstall();
             yield cliInstall.getCli(org, version, api);
+            const tmcLogin = new login_1.TmcLogin();
+            yield tmcLogin.login(token, managementClusterName, provisionerName);
         }
         catch (error) {
             core.setFailed(error.message);
@@ -4627,10 +4630,14 @@ exports.run = run;
 function cleanup() {
     return __awaiter(this, void 0, void 0, function* () {
         logging_1.logInfo('doing clean');
-        const res = yield tmc_exec_1.execTmc(`tmc`, ['system', 'context', 'list'], true).then(res => {
-            return res.stdout;
-        });
-        logging_1.logInfo(`result: ${res}`);
+        // const res = await execTmc(
+        //   `tmc`,
+        //   ['system', 'context', 'list'],
+        //   true
+        // ).then(res => {
+        //   return res.stdout;
+        // });
+        // logInfo(`result: ${res}`);
         // if (stateHelper.tmpDir.length > 0) {
         //   core.startGroup(`Removing temp folder ${stateHelper.tmpDir}`);
         //   fs.rmdirSync(stateHelper.tmpDir, {recursive: true});
@@ -5780,6 +5787,70 @@ function escapeProperty(s) {
         .replace(/,/g, '%2C');
 }
 //# sourceMappingURL=command.js.map
+
+/***/ }),
+
+/***/ 452:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const https = __importStar(__webpack_require__(211));
+const axios_1 = __importDefault(__webpack_require__(53));
+/**
+ * Client for tmc api operations.
+ */
+class TmcApiClient {
+    constructor(tmcEnv) {
+        this.tmcEnv = tmcEnv;
+        this.instance = axios_1.default.create({
+            maxBodyLength: Infinity,
+            maxContentLength: Infinity,
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json'
+            },
+            httpsAgent: new https.Agent({})
+        });
+    }
+    getSystemBinaries() {
+        return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
+            this.instance
+                .get(this.getServerUrl())
+                .then(r => {
+                resolve(r.data);
+            })
+                .catch(e => {
+                reject(e);
+            });
+        }));
+    }
+    getServerUrl() {
+        return `https://${this.tmcEnv.org}.tmc.cloud.vmware.com/${this.tmcEnv.api}/system/binaries`;
+    }
+}
+exports.TmcApiClient = TmcApiClient;
+
 
 /***/ }),
 
@@ -7583,6 +7654,41 @@ module.exports.wrap = wrap;
 
 /***/ }),
 
+/***/ 554:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const logging_1 = __webpack_require__(71);
+const tmc_cli_1 = __webpack_require__(992);
+class TmcLogin {
+    constructor() {
+        this.tmcCli = new tmc_cli_1.TmcCli();
+    }
+    login(token, managementClusterName, provisionerName) {
+        return __awaiter(this, void 0, void 0, function* () {
+            logging_1.startGroup('TMC login');
+            yield this.tmcCli.login(token);
+            yield this.tmcCli.configure(managementClusterName, provisionerName);
+            logging_1.endGroup();
+        });
+    }
+}
+exports.TmcLogin = TmcLogin;
+
+
+/***/ }),
+
 /***/ 564:
 /***/ (function(module, __unusedexports, __webpack_require__) {
 
@@ -8301,76 +8407,14 @@ exports.DEFAULT_CLI_SERVER_BASE = 'https://tmc-cli.s3-us-west-2.amazonaws.com/tm
 // Default tmc api version this action uses,
 // NOTE: change text in action.yml and docs if/when you change this
 exports.DEFAULT_TMC_API_VERSION = 'v1alpha1';
+exports.ENV_TMC_API_TOKEN = 'TMC_API_TOKEN';
 // input constants
 exports.INPUT_ORG = 'org';
 exports.INPUT_VERSION = 'version';
 exports.INPUT_API = 'api';
 exports.INPUT_TOKEN = 'token';
-
-
-/***/ }),
-
-/***/ 699:
-/***/ (function(__unusedmodule, exports, __webpack_require__) {
-
-"use strict";
-
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const https = __importStar(__webpack_require__(211));
-const axios_1 = __importDefault(__webpack_require__(53));
-/**
- * Client for tmc api operations.
- */
-class TmcClient {
-    constructor(tmcEnv) {
-        this.tmcEnv = tmcEnv;
-        this.instance = axios_1.default.create({
-            timeout: tmcEnv.timeout,
-            maxBodyLength: Infinity,
-            maxContentLength: Infinity,
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json'
-            },
-            httpsAgent: new https.Agent({})
-        });
-    }
-    getSystemBinaries() {
-        return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
-            this.instance
-                .get(this.getServerUrl())
-                .then(r => {
-                resolve(r.data);
-            })
-                .catch(e => {
-                reject(e);
-            });
-        }));
-    }
-    getServerUrl() {
-        return `https://${this.tmcEnv.org}.tmc.cloud.vmware.com/${this.tmcEnv.api}/system/binaries`;
-    }
-}
-exports.TmcClient = TmcClient;
+exports.INPUT_MANAGEMENT_CLUSTER_NAME = 'management-cluster-name';
+exports.INPUT_PROVISIONER_NAME = 'provisioner-name';
 
 
 /***/ }),
@@ -9306,13 +9350,16 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const exec = __importStar(__webpack_require__(986));
-exports.execTmc = (command, args = [], silent) => __awaiter(void 0, void 0, void 0, function* () {
+exports.execTmc = (command, args = [], silent, env) => __awaiter(void 0, void 0, void 0, function* () {
     let stdout = '';
     let stderr = '';
     const options = {
         silent: silent,
         ignoreReturnCode: true
     };
+    if (env) {
+        options.env = env;
+    }
     options.listeners = {
         stdout: (data) => {
             stdout += data.toString();
@@ -9328,6 +9375,59 @@ exports.execTmc = (command, args = [], silent) => __awaiter(void 0, void 0, void
         stderr: stderr.trim()
     };
 });
+
+
+/***/ }),
+
+/***/ 992:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const constants_1 = __webpack_require__(694);
+const tmc_exec_1 = __webpack_require__(991);
+class TmcCli {
+    constructor() { }
+    getVersion() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const version = yield tmc_exec_1.execTmc(`tmc`, ['version'], true).then(response => {
+                return response.stdout;
+            });
+            return version;
+            // return new Promise((resolve, reject) => {
+            //   resolve('');
+            // });
+        });
+    }
+    login(token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield tmc_exec_1.execTmc('tmc', ['--name githubactions', '--no-configure'], true, {
+                [constants_1.ENV_TMC_API_TOKEN]: token
+            });
+        });
+    }
+    configure(managementClusterName, provisionerName) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield tmc_exec_1.execTmc('tmc', [
+                '--management-cluster-name',
+                managementClusterName,
+                '--provisioner-name',
+                provisionerName
+            ], true);
+        });
+    }
+}
+exports.TmcCli = TmcCli;
 
 
 /***/ })

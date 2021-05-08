@@ -12,7 +12,6 @@ export interface ActionOptions {
  */
 export interface TmcEnv {
   org: string;
-  timeout: number;
   api: string;
 }
 

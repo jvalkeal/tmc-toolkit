@@ -1,10 +1,21 @@
 import {endGroup, startGroup} from './logging';
+import {TmcCli} from './tmc-cli';
 
 export class TmcLogin {
-  constructor() {}
+  private tmcCli: TmcCli;
 
-  public async login(): Promise<void> {
+  constructor() {
+    this.tmcCli = new TmcCli();
+  }
+
+  public async login(
+    token: string,
+    managementClusterName: string,
+    provisionerName: string
+  ): Promise<void> {
     startGroup('TMC login');
+    await this.tmcCli.login(token);
+    await this.tmcCli.configure(managementClusterName, provisionerName);
     endGroup();
   }
 }

@@ -10,7 +10,8 @@ export interface ExecResult {
 export const execTmc = async (
   command: string,
   args: string[] = [],
-  silent?: boolean
+  silent?: boolean,
+  env?: {[key: string]: string}
 ): Promise<ExecResult> => {
   let stdout: string = '';
   let stderr: string = '';
@@ -19,6 +20,9 @@ export const execTmc = async (
     silent: silent,
     ignoreReturnCode: true
   };
+  if (env) {
+    options.env = env;
+  }
   options.listeners = {
     stdout: (data: Buffer) => {
       stdout += data.toString();
