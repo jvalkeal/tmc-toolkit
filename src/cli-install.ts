@@ -5,6 +5,7 @@ import * as tc from '@actions/tool-cache';
 import * as fs from 'fs';
 import {TmcApiClient} from './tmc-api-client';
 import {endGroup, startGroup} from './logging';
+import {ActionOptions} from './interfaces';
 
 export interface GetCliResult {
   dir: string;
@@ -32,15 +33,17 @@ export class CliInstall {
     }
   }
 
-  public async getCli(
-    org: string,
-    versionIn: string,
-    apiVersion: string
-  ): Promise<GetCliResult> {
+  public async getCli(actionOptions: ActionOptions): Promise<GetCliResult> {
     startGroup('CLI install');
-    const latestVersion = await this.getLatestVersion(org, apiVersion);
+    const latestVersion = await this.getLatestVersion(
+      actionOptions.org,
+      actionOptions.api
+    );
     core.debug(`Latest version is ${latestVersion}`);
-    const version = versionIn === 'latest' ? latestVersion : versionIn;
+    const version =
+      actionOptions.version === 'latest'
+        ? latestVersion
+        : actionOptions.version;
     let arch: string;
     const toolName = 'tmc-cli';
     let toolPath = tc.find(toolName, version);

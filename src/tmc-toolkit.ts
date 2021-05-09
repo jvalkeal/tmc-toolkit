@@ -16,6 +16,7 @@ import {inputNotRequired, inputRequired} from './utils';
 import * as stateHelper from './state-helper';
 import {TmcLogin} from './login';
 import {TmcCli} from './tmc-cli';
+import {ActionOptions} from './interfaces';
 
 /**
  * Main entry point for an action doing real stuff. Separate from action
@@ -32,9 +33,19 @@ export async function run() {
     const managementClusterName = inputRequired(INPUT_MANAGEMENT_CLUSTER_NAME);
     const provisionerName = inputRequired(INPUT_PROVISIONER_NAME);
 
+    const actionOptions: ActionOptions = {
+      org,
+      token,
+      api,
+      version,
+      contextName,
+      managementClusterName,
+      provisionerName
+    };
+
     // Install cli
     const cliInstall = new CliInstall();
-    await cliInstall.getCli(org, version, api);
+    await cliInstall.getCli(actionOptions);
 
     // login and context setup
     const tmcLogin = new TmcLogin();

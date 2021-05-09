@@ -5,11 +5,11 @@ inputs:
   org:
     description: 'TMC organization'
     required: true
-  version:
-    description: 'TMC CLI version to make available on the path, defaults to "latest" from org'
-    required: false
   token:
     description: 'TMC api token'
+    required: true
+  version:
+    description: 'TMC CLI version to make available on the path, defaults to "latest" from org'
     required: false
   context-name:
     description: 'TMC authorization context name, defaults to "ghactions"'

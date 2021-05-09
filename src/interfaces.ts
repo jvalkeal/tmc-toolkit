@@ -4,7 +4,11 @@
 export interface ActionOptions {
   org: string;
   token: string;
-  version: string | undefined;
+  version: string;
+  api: string;
+  contextName: string;
+  managementClusterName: string | undefined;
+  provisionerName: string | undefined;
 }
 
 /**

@@ -2,6 +2,9 @@
 export const DEFAULT_CLI_SERVER_BASE =
   'https://tmc-cli.s3-us-west-2.amazonaws.com/tmc';
 
+// Minimum cli version this actions supports
+export const REQUIRED_MIN_CLI_VERSION = '>=0.2.1';
+
 // Default tmc api version this action uses,
 // NOTE: change text in action.yml and docs if/when you change this
 export const DEFAULT_TMC_API_VERSION = 'v1alpha1';

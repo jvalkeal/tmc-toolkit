@@ -50,11 +50,15 @@ describe('cli installer tests', () => {
       });
 
     const cliInstall = new CliInstall();
-    const result1 = await cliInstall.getCli(
-      'fakeorg',
-      '0.2.1-3baebdac',
-      DEFAULT_TMC_API_VERSION
-    );
+    const result1 = await cliInstall.getCli({
+      org: 'fakeorg',
+      version: '0.2.1-3baebdac',
+      api: DEFAULT_TMC_API_VERSION,
+      token: '',
+      contextName: '',
+      managementClusterName: undefined,
+      provisionerName: undefined
+    });
     expect(result1.cached).toBe(false);
     const cliDir = path.join(toolDir, 'tmc-cli', '0.2.1-3baebdac', 'x64');
 
@@ -90,11 +94,16 @@ describe('cli installer tests', () => {
     const cliInstall = new CliInstall();
 
     // take 1, should download
-    const result1 = await cliInstall.getCli(
-      'fakeorg',
-      'latest',
-      DEFAULT_TMC_API_VERSION
-    );
+    const result1 = await cliInstall.getCli({
+      org: 'fakeorg',
+      version: 'latest',
+      api: DEFAULT_TMC_API_VERSION,
+      token: '',
+      contextName: '',
+      managementClusterName: undefined,
+      provisionerName: undefined
+    });
+
     expect(result1.cached).toBe(false);
     const cliDir1 = path.join(toolDir, 'tmc-cli', '0.2.1-7e9c62fc', 'x64');
     if (IS_WINDOWS) {
@@ -104,11 +113,15 @@ describe('cli installer tests', () => {
     }
 
     // take 2, should use tool cache
-    const result2 = await cliInstall.getCli(
-      'fakeorg',
-      'latest',
-      DEFAULT_TMC_API_VERSION
-    );
+    const result2 = await cliInstall.getCli({
+      org: 'fakeorg',
+      version: 'latest',
+      api: DEFAULT_TMC_API_VERSION,
+      token: '',
+      contextName: '',
+      managementClusterName: undefined,
+      provisionerName: undefined
+    });
     expect(result2.cached).toBe(true);
     const cliDir2 = path.join(toolDir, 'tmc-cli', '0.2.1-7e9c62fc', 'x64');
     if (IS_WINDOWS) {
