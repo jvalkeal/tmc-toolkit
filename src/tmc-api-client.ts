@@ -5,12 +5,11 @@ import {SystemBinariesResponse, TmcEnv} from './interfaces';
 /**
  * Client for tmc api operations.
  */
-export class TmcClient {
+export class TmcApiClient {
   private instance: AxiosInstance;
 
   constructor(private tmcEnv: TmcEnv) {
     this.instance = axios.create({
-      timeout: tmcEnv.timeout,
       maxBodyLength: Infinity,
       maxContentLength: Infinity,
       headers: {
