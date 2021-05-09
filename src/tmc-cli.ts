@@ -1,5 +1,4 @@
 import {ENV_TMC_API_TOKEN} from './constants';
-import { logError, logInfo } from './logging';
 import {execTmc} from './tmc-exec';
 
 export class TmcCli {
@@ -10,22 +9,17 @@ export class TmcCli {
       return response.stdout;
     });
     return version;
-    // return new Promise((resolve, reject) => {
-    //   resolve('');
-    // });
   }
 
   public async login(token: string, contextName: string): Promise<string> {
-    await execTmc('tmc', ['login', '--name', contextName, '--no-configure'], false, {
-      [ENV_TMC_API_TOKEN]: token
-    })
-    .then(response => {
-      logInfo(`Login Response: ${response.stdout}`)
-    })
-    .catch(reason => {
-      logError(`Login Error: ${reason}`);
-    })
-    ;
+    await execTmc(
+      'tmc',
+      ['login', '--name', contextName, '--no-configure'],
+      false,
+      {
+        [ENV_TMC_API_TOKEN]: token
+      }
+    );
     return contextName;
   }
 
@@ -43,36 +37,10 @@ export class TmcCli {
         provisionerName
       ],
       true
-    )
-    .then(response => {
-      logInfo(`Configure Response: ${response.stdout}`)
-    })
-    .catch(reason => {
-      logError(`Configure Error: ${reason}`);
-    })
-    ;
+    );
   }
 
-  public async deleteContext(
-   name: string,
-  ): Promise<void> {
-    await execTmc(
-      'tmc',
-      [
-        'system',
-        'context',
-        'delete',
-        name
-      ],
-      true
-    )
-    .then(response => {
-      logInfo(`Context delete Response: ${response.stdout}`)
-    })
-    .catch(reason => {
-      logError(`Context delete Error: ${reason}`);
-    })
-    ;
+  public async deleteContext(name: string): Promise<void> {
+    await execTmc('tmc', ['system', 'context', 'delete', name], true);
   }
-
 }

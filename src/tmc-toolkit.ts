@@ -1,7 +1,7 @@
-import * as fs from 'fs';
 import * as core from '@actions/core';
 import {CliInstall} from './cli-install';
 import {
+  DEFAULT_CONTEXT_NAME,
   DEFAULT_TMC_API_VERSION,
   INPUT_API,
   INPUT_MANAGEMENT_CLUSTER_NAME,
@@ -11,12 +11,11 @@ import {
   INPUT_TOKEN,
   INPUT_VERSION
 } from './constants';
-import {logInfo} from './logging';
+import {logInfo, logWarn} from './logging';
 import {inputNotRequired, inputRequired} from './utils';
 import * as stateHelper from './state-helper';
-import {execTmc} from './tmc-exec';
 import {TmcLogin} from './login';
-import { TmcCli } from './tmc-cli';
+import {TmcCli} from './tmc-cli';
 
 /**
  * Main entry point for an action doing real stuff. Separate from action
@@ -27,16 +26,24 @@ export async function run() {
     const org = inputRequired(INPUT_ORG);
     const api = inputNotRequired(INPUT_API) || DEFAULT_TMC_API_VERSION;
     const version = inputNotRequired(INPUT_VERSION) || 'latest';
-    const token = inputNotRequired(INPUT_TOKEN);
-    const contextName = inputNotRequired(INPUT_CONTEXT_NAME);
-    const managementClusterName = inputNotRequired(INPUT_MANAGEMENT_CLUSTER_NAME);
-    const provisionerName = inputNotRequired(INPUT_PROVISIONER_NAME);
+    const token = inputRequired(INPUT_TOKEN);
+    const contextName =
+      inputNotRequired(INPUT_CONTEXT_NAME) || DEFAULT_CONTEXT_NAME;
+    const managementClusterName = inputRequired(INPUT_MANAGEMENT_CLUSTER_NAME);
+    const provisionerName = inputRequired(INPUT_PROVISIONER_NAME);
 
+    // Install cli
     const cliInstall = new CliInstall();
     await cliInstall.getCli(org, version, api);
 
+    // login and context setup
     const tmcLogin = new TmcLogin();
-    const contextNameCreated = await tmcLogin.login(token, managementClusterName, provisionerName, contextName);
+    const contextNameCreated = await tmcLogin.login(
+      token,
+      managementClusterName,
+      provisionerName,
+      contextName
+    );
     stateHelper.setCurrentContextName(contextNameCreated);
   } catch (error) {
     core.setFailed(error.message);
@@ -44,11 +51,13 @@ export async function run() {
 }
 
 export async function cleanup() {
-  logInfo('doing clean');
   if (stateHelper.currentContextName.length > 0) {
-    core.startGroup(`Removing context`);
+    logInfo('Removing context');
     const tmcCli = new TmcCli();
-    await tmcCli.deleteContext(stateHelper.currentContextName);
-    core.endGroup();
+    try {
+      await tmcCli.deleteContext(stateHelper.currentContextName);
+    } catch (error) {
+      logWarn('Unable to delete context');
+    }
   }
 }

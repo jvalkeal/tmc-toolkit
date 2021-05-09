@@ -5,23 +5,23 @@ inputs:
   org:
     description: 'TMC organization'
     required: true
+  version:
+    description: 'TMC CLI version to make available on the path, defaults to "latest" from org'
+    required: false
   token:
     description: 'TMC api token'
     required: false
   context-name:
-    description: 'xxx'
+    description: 'TMC authorization context name, defaults to "ghactions"'
     required: false
   management-cluster-name:
-    description: 'xxx'
+    description: 'TMC management cluster name'
     required: false
   provisioner-name:
-    description: 'xxx'
+    description: 'TMC provisioner name'
     required: false
   api:
-    description: 'TMC api version to use, defaults to v1alpha1'
-    required: false
-  version:
-    description: 'TMC CLI version to make available on the path, defaults to latest from org'
+    description: 'TMC api version to use, defaults to "v1alpha1"'
     required: false
 runs:
   using: 'node12'

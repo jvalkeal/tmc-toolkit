@@ -6,6 +6,10 @@ export const DEFAULT_CLI_SERVER_BASE =
 // NOTE: change text in action.yml and docs if/when you change this
 export const DEFAULT_TMC_API_VERSION = 'v1alpha1';
 
+// tmc context name
+export const DEFAULT_CONTEXT_NAME = 'ghactions';
+
+// env variable names
 export const ENV_TMC_API_TOKEN = 'TMC_API_TOKEN';
 
 // input constants

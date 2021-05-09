@@ -4616,12 +4616,14 @@ function run() {
             const org = utils_1.inputRequired(constants_1.INPUT_ORG);
             const api = utils_1.inputNotRequired(constants_1.INPUT_API) || constants_1.DEFAULT_TMC_API_VERSION;
             const version = utils_1.inputNotRequired(constants_1.INPUT_VERSION) || 'latest';
-            const token = utils_1.inputNotRequired(constants_1.INPUT_TOKEN);
-            const contextName = utils_1.inputNotRequired(constants_1.INPUT_CONTEXT_NAME);
-            const managementClusterName = utils_1.inputNotRequired(constants_1.INPUT_MANAGEMENT_CLUSTER_NAME);
-            const provisionerName = utils_1.inputNotRequired(constants_1.INPUT_PROVISIONER_NAME);
+            const token = utils_1.inputRequired(constants_1.INPUT_TOKEN);
+            const contextName = utils_1.inputNotRequired(constants_1.INPUT_CONTEXT_NAME) || constants_1.DEFAULT_CONTEXT_NAME;
+            const managementClusterName = utils_1.inputRequired(constants_1.INPUT_MANAGEMENT_CLUSTER_NAME);
+            const provisionerName = utils_1.inputRequired(constants_1.INPUT_PROVISIONER_NAME);
+            // Install cli
             const cliInstall = new cli_install_1.CliInstall();
             yield cliInstall.getCli(org, version, api);
+            // login and context setup
             const tmcLogin = new login_1.TmcLogin();
             const contextNameCreated = yield tmcLogin.login(token, managementClusterName, provisionerName, contextName);
             stateHelper.setCurrentContextName(contextNameCreated);
@@ -4634,12 +4636,15 @@ function run() {
 exports.run = run;
 function cleanup() {
     return __awaiter(this, void 0, void 0, function* () {
-        logging_1.logInfo('doing clean');
         if (stateHelper.currentContextName.length > 0) {
-            core.startGroup(`Removing context`);
+            logging_1.logInfo('Removing context');
             const tmcCli = new tmc_cli_1.TmcCli();
-            yield tmcCli.deleteContext(stateHelper.currentContextName);
-            core.endGroup();
+            try {
+                yield tmcCli.deleteContext(stateHelper.currentContextName);
+            }
+            catch (error) {
+                logging_1.logWarn('Unable to delete context');
+            }
         }
     });
 }
@@ -8406,6 +8411,9 @@ exports.DEFAULT_CLI_SERVER_BASE = 'https://tmc-cli.s3-us-west-2.amazonaws.com/tm
 // Default tmc api version this action uses,
 // NOTE: change text in action.yml and docs if/when you change this
 exports.DEFAULT_TMC_API_VERSION = 'v1alpha1';
+// tmc context name
+exports.DEFAULT_CONTEXT_NAME = 'ghactions';
+// env variable names
 exports.ENV_TMC_API_TOKEN = 'TMC_API_TOKEN';
 // input constants
 exports.INPUT_ORG = 'org';
@@ -9395,7 +9403,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const constants_1 = __webpack_require__(694);
-const logging_1 = __webpack_require__(71);
 const tmc_exec_1 = __webpack_require__(991);
 class TmcCli {
     constructor() { }
@@ -9405,21 +9412,12 @@ class TmcCli {
                 return response.stdout;
             });
             return version;
-            // return new Promise((resolve, reject) => {
-            //   resolve('');
-            // });
         });
     }
     login(token, contextName) {
         return __awaiter(this, void 0, void 0, function* () {
             yield tmc_exec_1.execTmc('tmc', ['login', '--name', contextName, '--no-configure'], false, {
                 [constants_1.ENV_TMC_API_TOKEN]: token
-            })
-                .then(response => {
-                logging_1.logInfo(`Login Response: ${response.stdout}`);
-            })
-                .catch(reason => {
-                logging_1.logError(`Login Error: ${reason}`);
             });
             return contextName;
         });
@@ -9432,29 +9430,12 @@ class TmcCli {
                 managementClusterName,
                 '--provisioner-name',
                 provisionerName
-            ], true)
-                .then(response => {
-                logging_1.logInfo(`Configure Response: ${response.stdout}`);
-            })
-                .catch(reason => {
-                logging_1.logError(`Configure Error: ${reason}`);
-            });
+            ], true);
         });
     }
     deleteContext(name) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield tmc_exec_1.execTmc('tmc', [
-                'system',
-                'context',
-                'delete',
-                name
-            ], true)
-                .then(response => {
-                logging_1.logInfo(`Context delete Response: ${response.stdout}`);
-            })
-                .catch(reason => {
-                logging_1.logError(`Context delete Error: ${reason}`);
-            });
+            yield tmc_exec_1.execTmc('tmc', ['system', 'context', 'delete', name], true);
         });
     }
 }
