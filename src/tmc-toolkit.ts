@@ -57,7 +57,7 @@ export async function run() {
     );
     stateHelper.setCurrentContextName(contextNameCreated);
   } catch (error) {
-    core.setFailed(error.message);
+    core.setFailed(`${(error as any)?.message ?? error}`);
   }
 }
 
@@ -68,7 +68,7 @@ export async function cleanup() {
     try {
       await tmcCli.deleteContext(stateHelper.currentContextName);
     } catch (error) {
-      logWarn('Unable to delete context');
+      logWarn(`Unable to delete context ${(error as any)?.message ?? error}`);
     }
   }
 }

@@ -37,4 +37,23 @@ describe('tmc-cli tests', () => {
     const met = await cli.hasPrerequisites();
     expect(met).toBe(false);
   });
+
+  it('kubeconfig', async () => {
+    const cli = new TmcCli();
+    let count = 0;
+    jest.spyOn(cli, 'getKubeConfigYml').mockImplementation(() => {
+      // console.log(`T00 ${count}`);
+      if (count++ < 3) {
+        // console.log(`T01 ${count}`);
+        throw new Error();
+      }
+      // console.log(`T02 ${count}`);
+      return Promise.resolve('xxx');
+    });
+    // console.log('T1');
+    const met = await cli.getKubeConfig('');
+    // console.log('T2');
+    expect(met).toBe('xxx');
+    // console.log('T3');
+  }, 20000);
 });
