@@ -354,13 +354,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const os = __webpack_require__(87);
-const events = __webpack_require__(614);
-const child = __webpack_require__(129);
-const path = __webpack_require__(622);
-const io = __webpack_require__(1);
-const ioUtil = __webpack_require__(672);
+const os = __importStar(__webpack_require__(87));
+const events = __importStar(__webpack_require__(614));
+const child = __importStar(__webpack_require__(129));
+const path = __importStar(__webpack_require__(622));
+const io = __importStar(__webpack_require__(1));
+const ioUtil = __importStar(__webpack_require__(672));
 /* eslint-disable @typescript-eslint/unbound-method */
 const IS_WINDOWS = process.platform === 'win32';
 /*
@@ -804,6 +811,12 @@ class ToolRunner extends events.EventEmitter {
                         resolve(exitCode);
                     }
                 });
+                if (this.options.input) {
+                    if (!cp.stdin) {
+                        throw new Error('child process missing stdin');
+                    }
+                    cp.stdin.end(this.options.input);
+                }
             });
         });
     }
@@ -1511,6 +1524,61 @@ module.exports = __webpack_require__(352);
 
 /***/ }),
 
+/***/ 71:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.endGroup = exports.startGroup = exports.logDebug = exports.logInfo = exports.logError = exports.logWarn = void 0;
+const core = __importStar(__webpack_require__(470));
+function logWarn(message) {
+    core.warning(message);
+}
+exports.logWarn = logWarn;
+function logError(message) {
+    core.error(message);
+}
+exports.logError = logError;
+function logInfo(message) {
+    core.info(message);
+}
+exports.logInfo = logInfo;
+function logDebug(message) {
+    core.debug(message);
+}
+exports.logDebug = logDebug;
+function startGroup(group) {
+    core.startGroup(group);
+}
+exports.startGroup = startGroup;
+function endGroup() {
+    core.endGroup();
+}
+exports.endGroup = endGroup;
+
+
+/***/ }),
+
 /***/ 81:
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1808,6 +1876,46 @@ module.exports = require("os");
 
 /***/ }),
 
+/***/ 92:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.setCurrentContextName = exports.currentContextName = exports.IsPost = void 0;
+const core = __importStar(__webpack_require__(470));
+exports.IsPost = !!process.env['STATE_isPost'];
+exports.currentContextName = process.env['STATE_currentContextName'] || '';
+function setCurrentContextName(name) {
+    core.saveState('currentContextName', name);
+}
+exports.setCurrentContextName = setCurrentContextName;
+if (!exports.IsPost) {
+    core.saveState('isPost', 'true');
+}
+
+
+/***/ }),
+
 /***/ 102:
 /***/ (function(__unusedmodule, exports, __webpack_require__) {
 
@@ -1868,6 +1976,25 @@ module.exports = function isAxiosError(payload) {
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -1877,20 +2004,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.CliInstall = void 0;
 const path = __importStar(__webpack_require__(622));
 const core = __importStar(__webpack_require__(470));
 const io = __importStar(__webpack_require__(1));
 const tc = __importStar(__webpack_require__(533));
 const fs = __importStar(__webpack_require__(747));
-const tmc_client_1 = __webpack_require__(699);
+const tmc_api_client_1 = __webpack_require__(452);
+const logging_1 = __webpack_require__(71);
 class CliInstall {
     constructor() {
         this.tempDirectory = process.env['RUNNER_TEMP'] || '';
@@ -1912,11 +2034,14 @@ class CliInstall {
             this.tempDirectory = path.join(baseLocation, 'actions', 'temp');
         }
     }
-    getCli(org, versionIn, apiVersion) {
+    getCli(actionOptions) {
         return __awaiter(this, void 0, void 0, function* () {
-            const latestVersion = yield this.getLatestVersion(org, apiVersion);
+            (0, logging_1.startGroup)('CLI install');
+            const latestVersion = yield this.getLatestVersion(actionOptions.org, actionOptions.api);
             core.debug(`Latest version is ${latestVersion}`);
-            const version = versionIn === 'latest' ? latestVersion : versionIn;
+            const version = actionOptions.version === 'latest'
+                ? latestVersion
+                : actionOptions.version;
             let arch;
             const toolName = 'tmc-cli';
             let toolPath = tc.find(toolName, version);
@@ -1950,6 +2075,7 @@ class CliInstall {
                 toolPath = yield tc.cacheDir(cliDir, toolName, this.getCacheVersionString(cliVersion));
             }
             core.addPath(toolPath);
+            (0, logging_1.endGroup)();
             return { dir: toolPath, cached };
         });
     }
@@ -1972,9 +2098,8 @@ class CliInstall {
     }
     getLatestVersion(org, api) {
         return __awaiter(this, void 0, void 0, function* () {
-            const tmcClient = new tmc_client_1.TmcClient({
+            const tmcClient = new tmc_api_client_1.TmcApiClient({
                 org,
-                timeout: 9999,
                 api
             });
             return (yield tmcClient.getSystemBinaries()).latestVersion;
@@ -2013,9 +2138,34 @@ module.exports = require("child_process");
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const tmc_toolkit_1 = __webpack_require__(292);
-tmc_toolkit_1.run();
+const stateHelper = __importStar(__webpack_require__(92));
+if (!stateHelper.IsPost) {
+    (0, tmc_toolkit_1.run)();
+}
+else {
+    (0, tmc_toolkit_1.cleanup)();
+}
 
 
 /***/ }),
@@ -2455,34 +2605,35 @@ exports.debug = debug; // for test
 
 "use strict";
 
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.inputNotRequired = exports.inputRequired = void 0;
 const core = __importStar(__webpack_require__(470));
-const exec_1 = __webpack_require__(986);
-function runCli(cliPath, args) {
-    return __awaiter(this, void 0, void 0, function* () {
-        let res = yield exec_1.exec(cliPath, args);
-        if (res !== core.ExitCode.Success) {
-            throw new Error('CLI exited with exit code ' + res);
-        }
-    });
-}
-exports.runCli = runCli;
+// import {exec} from '@actions/exec';
+// export async function runCli(cliPath: string, args: string[] | undefined) {
+//   let res: number = await exec(cliPath, args);
+//   if (res !== core.ExitCode.Success) {
+//     throw new Error('CLI exited with exit code ' + res);
+//   }
+// }
 function inputRequired(id) {
     return core.getInput(id, { required: true });
 }
@@ -4496,6 +4647,25 @@ module.exports = InterceptorManager;
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -4505,38 +4675,78 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.cleanup = exports.run = void 0;
 const core = __importStar(__webpack_require__(470));
 const cli_install_1 = __webpack_require__(128);
 const constants_1 = __webpack_require__(694);
+const logging_1 = __webpack_require__(71);
 const utils_1 = __webpack_require__(163);
+const stateHelper = __importStar(__webpack_require__(92));
+const login_1 = __webpack_require__(554);
+const tmc_cli_1 = __webpack_require__(992);
 /**
  * Main entry point for an action doing real stuff. Separate from action
  * main call point to ease testing inputs.
  */
 function run() {
+    var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const org = utils_1.inputRequired(constants_1.INPUT_ORG);
-            const api = utils_1.inputNotRequired(constants_1.INPUT_API) || constants_1.DEFAULT_TMC_API_VERSION;
-            const version = utils_1.inputNotRequired(constants_1.INPUT_VERSION) || 'latest';
+            const org = (0, utils_1.inputRequired)(constants_1.INPUT_ORG);
+            const api = (0, utils_1.inputNotRequired)(constants_1.INPUT_API) || constants_1.DEFAULT_TMC_API_VERSION;
+            const version = (0, utils_1.inputNotRequired)(constants_1.INPUT_VERSION) || 'latest';
+            const token = (0, utils_1.inputRequired)(constants_1.INPUT_TOKEN);
+            const contextName = (0, utils_1.inputNotRequired)(constants_1.INPUT_CONTEXT_NAME) || constants_1.DEFAULT_CONTEXT_NAME;
+            const managementClusterName = (0, utils_1.inputRequired)(constants_1.INPUT_MANAGEMENT_CLUSTER_NAME);
+            const provisionerName = (0, utils_1.inputRequired)(constants_1.INPUT_PROVISIONER_NAME);
+            const actionOptions = {
+                org,
+                token,
+                api,
+                version,
+                contextName,
+                managementClusterName,
+                provisionerName
+            };
+            // Install cli
             const cliInstall = new cli_install_1.CliInstall();
-            yield cliInstall.getCli(org, version, api);
+            yield cliInstall.getCli(actionOptions);
+            // login and context setup
+            const tmcLogin = new login_1.TmcLogin();
+            const contextNameCreated = yield tmcLogin.login(token, managementClusterName, provisionerName, contextName);
+            stateHelper.setCurrentContextName(contextNameCreated);
         }
         catch (error) {
-            core.setFailed(error.message);
+            core.setFailed(`${(_b = (_a = error) === null || _a === void 0 ? void 0 : _a.message) !== null && _b !== void 0 ? _b : error}`);
         }
     });
 }
 exports.run = run;
+function cleanup() {
+    var _a, _b;
+    return __awaiter(this, void 0, void 0, function* () {
+        if (stateHelper.currentContextName.length > 0) {
+            (0, logging_1.logInfo)('Removing context');
+            const tmcCli = new tmc_cli_1.TmcCli();
+            try {
+                yield tmcCli.deleteContext(stateHelper.currentContextName);
+            }
+            catch (error) {
+                (0, logging_1.logWarn)(`Unable to delete context ${(_b = (_a = error) === null || _a === void 0 ? void 0 : _a.message) !== null && _b !== void 0 ? _b : error}`);
+            }
+        }
+    });
+}
+exports.cleanup = cleanup;
 
+
+/***/ }),
+
+/***/ 321:
+/***/ (function(module, __unusedexports, __webpack_require__) {
+
+module.exports = __webpack_require__(600);
 
 /***/ }),
 
@@ -5680,6 +5890,83 @@ function escapeProperty(s) {
 
 /***/ }),
 
+/***/ 452:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.TmcApiClient = void 0;
+const https = __importStar(__webpack_require__(211));
+const axios_1 = __importDefault(__webpack_require__(53));
+/**
+ * Client for tmc api operations.
+ */
+class TmcApiClient {
+    constructor(tmcEnv) {
+        this.tmcEnv = tmcEnv;
+        this.instance = axios_1.default.create({
+            maxBodyLength: Infinity,
+            maxContentLength: Infinity,
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json'
+            },
+            httpsAgent: new https.Agent({})
+        });
+    }
+    getSystemBinaries() {
+        return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
+            this.instance
+                .get(this.getServerUrl())
+                .then(r => {
+                resolve(r.data);
+            })
+                .catch(e => {
+                reject(e);
+            });
+        }));
+    }
+    getServerUrl() {
+        return `https://${this.tmcEnv.org}.tmc.cloud.vmware.com/${this.tmcEnv.api}/system/binaries`;
+    }
+}
+exports.TmcApiClient = TmcApiClient;
+
+
+/***/ }),
+
 /***/ 454:
 /***/ (function(module, __unusedexports, __webpack_require__) {
 
@@ -6215,6 +6502,73 @@ function setup(env) {
 }
 
 module.exports = setup;
+
+
+/***/ }),
+
+/***/ 523:
+/***/ (function(module, __unusedexports, __webpack_require__) {
+
+// Packages
+var retrier = __webpack_require__(321);
+
+function retry(fn, opts) {
+  function run(resolve, reject) {
+    var options = opts || {};
+
+    // Default `randomize` to true
+    if (!('randomize' in options)) {
+      options.randomize = true;
+    }
+
+    var op = retrier.operation(options);
+
+    // We allow the user to abort retrying
+    // this makes sense in the cases where
+    // knowledge is obtained that retrying
+    // would be futile (e.g.: auth errors)
+
+    function bail(err) {
+      reject(err || new Error('Aborted'));
+    }
+
+    function onError(err, num) {
+      if (err.bail) {
+        bail(err);
+        return;
+      }
+
+      if (!op.retry(err)) {
+        reject(op.mainError());
+      } else if (options.onRetry) {
+        options.onRetry(err, num);
+      }
+    }
+
+    function runAttempt(num) {
+      var val;
+
+      try {
+        val = fn(bail, num);
+      } catch (err) {
+        onError(err, num);
+        return;
+      }
+
+      Promise.resolve(val)
+        .then(resolve)
+        .catch(function catchIt(err) {
+          onError(err, num);
+        });
+    }
+
+    op.attempt(runAttempt);
+  }
+
+  return new Promise(run);
+}
+
+module.exports = retry;
 
 
 /***/ }),
@@ -7480,6 +7834,43 @@ module.exports.wrap = wrap;
 
 /***/ }),
 
+/***/ 554:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.TmcLogin = void 0;
+const logging_1 = __webpack_require__(71);
+const tmc_cli_1 = __webpack_require__(992);
+class TmcLogin {
+    constructor() {
+        this.tmcCli = new tmc_cli_1.TmcCli();
+    }
+    login(token, managementClusterName, provisionerName, contextName) {
+        return __awaiter(this, void 0, void 0, function* () {
+            (0, logging_1.startGroup)('TMC login');
+            const contextNameCreated = yield this.tmcCli.login(token, contextName);
+            yield this.tmcCli.configure(managementClusterName, provisionerName);
+            (0, logging_1.endGroup)();
+            return contextNameCreated;
+        });
+    }
+}
+exports.TmcLogin = TmcLogin;
+
+
+/***/ }),
+
 /***/ 564:
 /***/ (function(module, __unusedexports, __webpack_require__) {
 
@@ -7558,6 +7949,113 @@ module.exports = function isAbsoluteURL(url) {
   // RFC 3986 defines scheme name as a sequence of characters beginning with a letter and followed
   // by any combination of letters, digits, plus, period, or hyphen.
   return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url);
+};
+
+
+/***/ }),
+
+/***/ 600:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+var RetryOperation = __webpack_require__(988);
+
+exports.operation = function(options) {
+  var timeouts = exports.timeouts(options);
+  return new RetryOperation(timeouts, {
+      forever: options && options.forever,
+      unref: options && options.unref,
+      maxRetryTime: options && options.maxRetryTime
+  });
+};
+
+exports.timeouts = function(options) {
+  if (options instanceof Array) {
+    return [].concat(options);
+  }
+
+  var opts = {
+    retries: 10,
+    factor: 2,
+    minTimeout: 1 * 1000,
+    maxTimeout: Infinity,
+    randomize: false
+  };
+  for (var key in options) {
+    opts[key] = options[key];
+  }
+
+  if (opts.minTimeout > opts.maxTimeout) {
+    throw new Error('minTimeout is greater than maxTimeout');
+  }
+
+  var timeouts = [];
+  for (var i = 0; i < opts.retries; i++) {
+    timeouts.push(this.createTimeout(i, opts));
+  }
+
+  if (options && options.forever && !timeouts.length) {
+    timeouts.push(this.createTimeout(i, opts));
+  }
+
+  // sort the array numerically ascending
+  timeouts.sort(function(a,b) {
+    return a - b;
+  });
+
+  return timeouts;
+};
+
+exports.createTimeout = function(attempt, opts) {
+  var random = (opts.randomize)
+    ? (Math.random() + 1)
+    : 1;
+
+  var timeout = Math.round(random * opts.minTimeout * Math.pow(opts.factor, attempt));
+  timeout = Math.min(timeout, opts.maxTimeout);
+
+  return timeout;
+};
+
+exports.wrap = function(obj, options, methods) {
+  if (options instanceof Array) {
+    methods = options;
+    options = null;
+  }
+
+  if (!methods) {
+    methods = [];
+    for (var key in obj) {
+      if (typeof obj[key] === 'function') {
+        methods.push(key);
+      }
+    }
+  }
+
+  for (var i = 0; i < methods.length; i++) {
+    var method   = methods[i];
+    var original = obj[method];
+
+    obj[method] = function retryWrapper(original) {
+      var op       = exports.operation(options);
+      var args     = Array.prototype.slice.call(arguments, 1);
+      var callback = args.pop();
+
+      args.push(function(err) {
+        if (op.retry(err)) {
+          return;
+        }
+        if (err) {
+          arguments[0] = op.mainError();
+        }
+        callback.apply(this, arguments);
+      });
+
+      op.attempt(function() {
+        original.apply(obj, args);
+      });
+    }.bind(obj, original);
+    obj[method].options = options;
+  }
 };
 
 
@@ -8193,80 +8691,26 @@ module.exports = (
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.INPUT_PROVISIONER_NAME = exports.INPUT_MANAGEMENT_CLUSTER_NAME = exports.INPUT_CONTEXT_NAME = exports.INPUT_TOKEN = exports.INPUT_API = exports.INPUT_VERSION = exports.INPUT_ORG = exports.ENV_TMC_API_TOKEN = exports.DEFAULT_CONTEXT_NAME = exports.DEFAULT_TMC_API_VERSION = exports.REQUIRED_MIN_CLI_VERSION = exports.DEFAULT_CLI_SERVER_BASE = void 0;
 // Current base locations for tmc cli binaries
 exports.DEFAULT_CLI_SERVER_BASE = 'https://tmc-cli.s3-us-west-2.amazonaws.com/tmc';
+// Minimum cli version this actions supports
+exports.REQUIRED_MIN_CLI_VERSION = '>=0.2.1';
 // Default tmc api version this action uses,
 // NOTE: change text in action.yml and docs if/when you change this
 exports.DEFAULT_TMC_API_VERSION = 'v1alpha1';
+// tmc context name
+exports.DEFAULT_CONTEXT_NAME = 'ghactions';
+// env variable names
+exports.ENV_TMC_API_TOKEN = 'TMC_API_TOKEN';
 // input constants
 exports.INPUT_ORG = 'org';
 exports.INPUT_VERSION = 'version';
 exports.INPUT_API = 'api';
-
-
-/***/ }),
-
-/***/ 699:
-/***/ (function(__unusedmodule, exports, __webpack_require__) {
-
-"use strict";
-
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const https = __importStar(__webpack_require__(211));
-const axios_1 = __importDefault(__webpack_require__(53));
-/**
- * Client for tmc api operations.
- */
-class TmcClient {
-    constructor(tmcEnv) {
-        this.tmcEnv = tmcEnv;
-        this.instance = axios_1.default.create({
-            timeout: tmcEnv.timeout,
-            maxBodyLength: Infinity,
-            maxContentLength: Infinity,
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json'
-            },
-            httpsAgent: new https.Agent({})
-        });
-    }
-    getSystemBinaries() {
-        return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
-            this.instance
-                .get(this.getServerUrl())
-                .then(r => {
-                resolve(r.data);
-            })
-                .catch(e => {
-                reject(e);
-            });
-        }));
-    }
-    getServerUrl() {
-        return `https://${this.tmcEnv.org}.tmc.cloud.vmware.com/${this.tmcEnv.api}/system/binaries`;
-    }
-}
-exports.TmcClient = TmcClient;
+exports.INPUT_TOKEN = 'token';
+exports.INPUT_CONTEXT_NAME = 'context-name';
+exports.INPUT_MANAGEMENT_CLUSTER_NAME = 'management-cluster-name';
+exports.INPUT_PROVISIONER_NAME = 'provisioner-name';
 
 
 /***/ }),
@@ -9142,8 +9586,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const tr = __webpack_require__(9);
+const tr = __importStar(__webpack_require__(9));
 /**
  * Exec a command.
  * Output will be streamed to the live console.
@@ -9169,6 +9620,353 @@ function exec(commandLine, args, options) {
 }
 exports.exec = exec;
 //# sourceMappingURL=exec.js.map
+
+/***/ }),
+
+/***/ 988:
+/***/ (function(module) {
+
+function RetryOperation(timeouts, options) {
+  // Compatibility for the old (timeouts, retryForever) signature
+  if (typeof options === 'boolean') {
+    options = { forever: options };
+  }
+
+  this._originalTimeouts = JSON.parse(JSON.stringify(timeouts));
+  this._timeouts = timeouts;
+  this._options = options || {};
+  this._maxRetryTime = options && options.maxRetryTime || Infinity;
+  this._fn = null;
+  this._errors = [];
+  this._attempts = 1;
+  this._operationTimeout = null;
+  this._operationTimeoutCb = null;
+  this._timeout = null;
+  this._operationStart = null;
+
+  if (this._options.forever) {
+    this._cachedTimeouts = this._timeouts.slice(0);
+  }
+}
+module.exports = RetryOperation;
+
+RetryOperation.prototype.reset = function() {
+  this._attempts = 1;
+  this._timeouts = this._originalTimeouts;
+}
+
+RetryOperation.prototype.stop = function() {
+  if (this._timeout) {
+    clearTimeout(this._timeout);
+  }
+
+  this._timeouts       = [];
+  this._cachedTimeouts = null;
+};
+
+RetryOperation.prototype.retry = function(err) {
+  if (this._timeout) {
+    clearTimeout(this._timeout);
+  }
+
+  if (!err) {
+    return false;
+  }
+  var currentTime = new Date().getTime();
+  if (err && currentTime - this._operationStart >= this._maxRetryTime) {
+    this._errors.unshift(new Error('RetryOperation timeout occurred'));
+    return false;
+  }
+
+  this._errors.push(err);
+
+  var timeout = this._timeouts.shift();
+  if (timeout === undefined) {
+    if (this._cachedTimeouts) {
+      // retry forever, only keep last error
+      this._errors.splice(this._errors.length - 1, this._errors.length);
+      this._timeouts = this._cachedTimeouts.slice(0);
+      timeout = this._timeouts.shift();
+    } else {
+      return false;
+    }
+  }
+
+  var self = this;
+  var timer = setTimeout(function() {
+    self._attempts++;
+
+    if (self._operationTimeoutCb) {
+      self._timeout = setTimeout(function() {
+        self._operationTimeoutCb(self._attempts);
+      }, self._operationTimeout);
+
+      if (self._options.unref) {
+          self._timeout.unref();
+      }
+    }
+
+    self._fn(self._attempts);
+  }, timeout);
+
+  if (this._options.unref) {
+      timer.unref();
+  }
+
+  return true;
+};
+
+RetryOperation.prototype.attempt = function(fn, timeoutOps) {
+  this._fn = fn;
+
+  if (timeoutOps) {
+    if (timeoutOps.timeout) {
+      this._operationTimeout = timeoutOps.timeout;
+    }
+    if (timeoutOps.cb) {
+      this._operationTimeoutCb = timeoutOps.cb;
+    }
+  }
+
+  var self = this;
+  if (this._operationTimeoutCb) {
+    this._timeout = setTimeout(function() {
+      self._operationTimeoutCb();
+    }, self._operationTimeout);
+  }
+
+  this._operationStart = new Date().getTime();
+
+  this._fn(this._attempts);
+};
+
+RetryOperation.prototype.try = function(fn) {
+  console.log('Using RetryOperation.try() is deprecated');
+  this.attempt(fn);
+};
+
+RetryOperation.prototype.start = function(fn) {
+  console.log('Using RetryOperation.start() is deprecated');
+  this.attempt(fn);
+};
+
+RetryOperation.prototype.start = RetryOperation.prototype.try;
+
+RetryOperation.prototype.errors = function() {
+  return this._errors;
+};
+
+RetryOperation.prototype.attempts = function() {
+  return this._attempts;
+};
+
+RetryOperation.prototype.mainError = function() {
+  if (this._errors.length === 0) {
+    return null;
+  }
+
+  var counts = {};
+  var mainError = null;
+  var mainErrorCount = 0;
+
+  for (var i = 0; i < this._errors.length; i++) {
+    var error = this._errors[i];
+    var message = error.message;
+    var count = (counts[message] || 0) + 1;
+
+    counts[message] = count;
+
+    if (count >= mainErrorCount) {
+      mainError = error;
+      mainErrorCount = count;
+    }
+  }
+
+  return mainError;
+};
+
+
+/***/ }),
+
+/***/ 991:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.execTmc = void 0;
+const exec = __importStar(__webpack_require__(986));
+const execTmc = (command, args = [], silent, env) => __awaiter(void 0, void 0, void 0, function* () {
+    let stdout = '';
+    let stderr = '';
+    const options = {
+        silent: silent,
+        ignoreReturnCode: true
+    };
+    if (env) {
+        options.env = env;
+    }
+    options.listeners = {
+        stdout: (data) => {
+            stdout += data.toString();
+        },
+        stderr: (data) => {
+            stderr += data.toString();
+        }
+    };
+    const returnCode = yield exec.exec(command, args, options);
+    return {
+        success: returnCode === 0,
+        stdout: stdout.trim(),
+        stderr: stderr.trim()
+    };
+});
+exports.execTmc = execTmc;
+
+
+/***/ }),
+
+/***/ 992:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.TmcCli = void 0;
+const semver = __importStar(__webpack_require__(280));
+// import * as retry from 'async-retry';
+const async_retry_1 = __importDefault(__webpack_require__(523));
+const constants_1 = __webpack_require__(694);
+const tmc_exec_1 = __webpack_require__(991);
+const logging_1 = __webpack_require__(71);
+class TmcCli {
+    constructor() { }
+    getVersion() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const versionRaw = yield (0, tmc_exec_1.execTmc)(`tmc`, ['version'], true).then(response => {
+                return response.stdout;
+            });
+            return versionRaw.split(' ').slice(-1)[0];
+        });
+    }
+    hasPrerequisites() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const versionRaw = yield this.getVersion();
+            const version = semver.coerce(versionRaw);
+            if (version) {
+                return semver.satisfies(version, constants_1.REQUIRED_MIN_CLI_VERSION);
+            }
+            else {
+                return false;
+            }
+        });
+    }
+    login(token, contextName) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield (0, tmc_exec_1.execTmc)('tmc', ['login', '--name', contextName, '--no-configure'], false, {
+                [constants_1.ENV_TMC_API_TOKEN]: token
+            });
+            return contextName;
+        });
+    }
+    configure(managementClusterName, provisionerName) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield (0, tmc_exec_1.execTmc)('tmc', [
+                'configure',
+                '--management-cluster-name',
+                managementClusterName,
+                '--provisioner-name',
+                provisionerName
+            ], true);
+        });
+    }
+    deleteContext(name) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield (0, tmc_exec_1.execTmc)('tmc', ['system', 'context', 'delete', name], true);
+        });
+    }
+    getKubeConfig(name) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return (0, async_retry_1.default)((bail) => __awaiter(this, void 0, void 0, function* () {
+                return yield this.getKubeConfigYml(name);
+            }), {
+                retries: 5,
+                factor: 1,
+                minTimeout: 1 * 1000,
+                // maxRetryTime: 10 * 1000,
+                onRetry: (e, a) => {
+                    (0, logging_1.logInfo)(`onRetry ${e} ${a}`);
+                }
+            });
+        });
+    }
+    getKubeConfigYml(name) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield (0, tmc_exec_1.execTmc)('tmc', ['cluster', 'auth', 'kubeconfig', 'get', name], true).then(response => response.stdout);
+        });
+    }
+}
+exports.TmcCli = TmcCli;
+
 
 /***/ })
 
